@@ -1,10 +1,9 @@
 ﻿using System.Data;
 
-namespace AdmissionApp.Repositories
+namespace AdmissionVGTU.Repositories
 {
     public class ReportRepository
     {
-        // Получение статистики по направлениям подготовки
         public static DataTable GetApplicationsByProgram()
         {
             string query = @"
@@ -17,7 +16,6 @@ namespace AdmissionApp.Repositories
             return DatabaseHelper.ExecuteQuery(query);
         }
 
-        // Получение статистики по статусам заявлений
         public static DataTable GetApplicationsByStatus()
         {
             string query = @"

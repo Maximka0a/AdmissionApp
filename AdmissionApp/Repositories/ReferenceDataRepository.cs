@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using Npgsql;
-using AdmissionApp.Models;
+using AdmissionVGTU.Models;
 
-namespace AdmissionApp.Repositories
+namespace AdmissionVGTU.Repositories
 {
     public class ReferenceDataRepository
     {
-        // Получение всех уровней образования
         public static List<EducationLevel> GetEducationLevels()
         {
             string query = "SELECT * FROM educationlevels ORDER BY levelid";
@@ -29,7 +28,6 @@ namespace AdmissionApp.Repositories
             return levels;
         }
 
-        // Получение направлений подготовки по уровню образования
         public static List<StudyProgram> GetStudyProgramsByLevel(int levelId)
         {
             string query = "SELECT * FROM studyprograms WHERE levelid = @LevelID ORDER BY programname";

@@ -2,12 +2,12 @@
 using System.Data;
 using System.Windows.Forms;
 using System.IO;
-using AdmissionApp.Repositories;
+using AdmissionVGTU.Repositories;
 using System.Text;
-using iTextSharp.text; // <<< Для iTextSharp Document, Paragraph, Font и т.д.
-using iTextSharp.text.pdf; // <<< Для iTextSharp PdfWriter, BaseFont
+using iTextSharp.text;
+using iTextSharp.text.pdf; 
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public partial class ReportsForm : Form
     {
@@ -25,22 +25,18 @@ namespace AdmissionApp
         {
             try
             {
-                // Загрузка данных для отчетов
                 DataTable programsData = ReportRepository.GetApplicationsByProgram();
                 DataTable statusesData = ReportRepository.GetApplicationsByStatus();
 
-                // Отображение таблиц данных
                 dgvProgramStats.DataSource = programsData;
                 dgvStatusStats.DataSource = statusesData;
 
-                // Настройка отображения колонок
                 dgvProgramStats.Columns["programname"].HeaderText = "Направление подготовки";
                 dgvProgramStats.Columns["applicationcount"].HeaderText = "Количество заявлений";
 
                 dgvStatusStats.Columns["statusname"].HeaderText = "Статус";
                 dgvStatusStats.Columns["applicationcount"].HeaderText = "Количество заявлений";
 
-                // Добавление итоговой строки к таблицам (клонируем, чтобы не модифицировать исходные для экспорта)
                 AddTotalRow((DataTable)dgvProgramStats.DataSource, "programname", "applicationcount");
                 AddTotalRow((DataTable)dgvStatusStats.DataSource, "statusname", "applicationcount");
 
@@ -54,27 +50,22 @@ namespace AdmissionApp
 
         private void AddTotalRow(DataTable table, string textColumnName, string countColumnName)
         {
-            // Создаем копию DataTable, чтобы не изменять исходный источник данных для экспорта
             DataTable displayTable = table.Copy();
 
-            // Вычисление общего количества
             int total = 0;
             foreach (DataRow row in displayTable.Rows)
             {
-                // Проверяем на DBNull перед конвертацией
                 if (row[countColumnName] != DBNull.Value)
                 {
                     total += Convert.ToInt32(row[countColumnName]);
                 }
             }
 
-            // Добавление итоговой строки
             DataRow totalRow = displayTable.NewRow();
             totalRow[textColumnName] = "ИТОГО";
             totalRow[countColumnName] = total;
             displayTable.Rows.Add(totalRow);
 
-            // Обновляем DataSource DataGridView новой таблицей с итоговой строкой
             if (textColumnName == "programname")
                 dgvProgramStats.DataSource = displayTable;
             else if (textColumnName == "statusname")
@@ -197,17 +188,12 @@ namespace AdmissionApp
             {
                 PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
 
-                // --- Шрифты для поддержки кириллицы ---
-                // Убедитесь, что шрифт Arial есть в системе или добавьте ttf файл в проект
-                // и укажите путь к нему. "BaseFont.IDENTITY_H" важен для Unicode.
                 string fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf");
                 if (!File.Exists(fontPath))
                 {
-                    // Попытка использовать стандартный шрифт, если Arial не найден (может не поддерживать кириллицу)
-                    // Или можно выбросить исключение/показать сообщение
-                    // throw new FileNotFoundException("Шрифт Arial не найден. Невозможно создать PDF с кириллицей.");
+
                     MessageBox.Show("Шрифт Arial не найден. Текст в PDF может отображаться некорректно.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    // Попробуем стандартный Helvetica как запасной вариант
+
                     fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "helvetica.ttf"); // Маловероятно, что сработает для кириллицы
                                                                                                                           // Если и его нет, iTextSharp может использовать встроенный по умолчанию, но он точно без кириллицы
                 }
@@ -216,7 +202,7 @@ namespace AdmissionApp
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 iTextSharp.text.Font headerFont = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.BOLD);
                 iTextSharp.text.Font cellFont = new iTextSharp.text.Font(baseFont, 10, iTextSharp.text.Font.NORMAL);
-                // --- Конец настройки шрифтов ---
+
 
                 document.Open();
 
@@ -237,9 +223,9 @@ namespace AdmissionApp
                     };
                     pdfTable.AddCell(cell);
                 }
-                pdfTable.HeaderRows = 1; // Указываем, что первая строка - это заголовок
+                pdfTable.HeaderRows = 1;
 
-                // Добавляем строки данных
+   
                 foreach (DataRow row in dataTable.Rows)
                 {
                     for (int i = 0; i < dataTable.Columns.Count; i++)
@@ -248,7 +234,6 @@ namespace AdmissionApp
                         PdfPCell cell = new PdfPCell(new Phrase(cellValue, cellFont))
                         {
                             Padding = 5,
-                            // Выравнивание для числовых колонок (предполагаем, что вторая колонка числовая)
                             HorizontalAlignment = (i == 1) ? Element.ALIGN_RIGHT : Element.ALIGN_LEFT,
                             VerticalAlignment = Element.ALIGN_MIDDLE
                         };
@@ -256,7 +241,7 @@ namespace AdmissionApp
                     }
                 }
 
-                // Добавляем таблицу в документ
+    
                 document.Add(pdfTable);
             }
             catch (DocumentException docEx)
@@ -269,7 +254,6 @@ namespace AdmissionApp
             }
             finally
             {
-                // Обязательно закрываем документ
                 if (document.IsOpen())
                 {
                     document.Close();

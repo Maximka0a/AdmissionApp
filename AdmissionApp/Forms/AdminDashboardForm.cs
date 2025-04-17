@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using AdmissionApp.Models;
-using AdmissionApp.Repositories;
+using AdmissionVGTU.Models;
+using AdmissionVGTU.Repositories;
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public partial class AdminDashboardForm : Form
     {
@@ -19,7 +19,6 @@ namespace AdmissionApp
 
         private void AdminDashboardForm_Load(object sender, EventArgs e)
         {
-            // Ensure CurrentUser is valid before proceeding
             if (CurrentUser.User != null)
             {
                 lblWelcome.Text = $"Добро пожаловать, {CurrentUser.User.FullName}!";
@@ -29,7 +28,7 @@ namespace AdmissionApp
             else
             {
                 MessageBox.Show("Ошибка: Пользователь не авторизован.", "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close(); // Close if no user logged in
+                this.Close(); 
             }
         }
 
@@ -51,7 +50,7 @@ namespace AdmissionApp
 
                 cmbStatus.DataSource = statusesWithAll;
                 cmbStatus.ValueMember = "StatusID";
-                cmbStatus.DisplayMember = "StatusName"; // Display the name, not the ID
+                cmbStatus.DisplayMember = "StatusName"; 
 
             }
             catch (Exception ex)
@@ -71,14 +70,8 @@ namespace AdmissionApp
 
                 if (cmbStatus.SelectedItem != null && ((ApplicationStatus)cmbStatus.SelectedItem).StatusID != 0)
                 {
-                    // Filter by StatusName, as expected by the repository method perhaps?
-                    // Or keep filtering by ID if the repository expects ID. Let's assume name for now.
                     statusFilter = ((ApplicationStatus)cmbStatus.SelectedItem).StatusName;
 
-                    // If your ApplicationRepository.GetAllApplications expects StatusID instead of name:
-                    // int statusIdFilter = ((ApplicationStatus)cmbStatus.SelectedItem).StatusID;
-                    // applications = ApplicationRepository.GetAllApplications(statusIdFilter, levelFilter, dateFilter);
-                    // Make sure the repository method signature matches what you pass.
                 }
 
                 if (cmbEducationLevel.SelectedItem != null && ((EducationLevel)cmbEducationLevel.SelectedItem).LevelID != 0)
@@ -88,16 +81,13 @@ namespace AdmissionApp
 
                 if (chkFilterByDate.Checked)
                 {
-                    // Use Date part only for filtering if you want to ignore time
+
                     dateFilter = dtpFilterDate.Value.Date;
                 }
 
-                // Assuming GetAllApplications takes statusName (string), levelId (int), date (DateTime?)
                 applications = ApplicationRepository.GetAllApplications(statusFilter, levelFilter, dateFilter);
-                dgvApplications.DataSource = null; // Clear binding
-                dgvApplications.DataSource = applications; // Rebind
-
-                // Adjust column settings (consider making this a separate method for clarity)
+                dgvApplications.DataSource = null;
+                dgvApplications.DataSource = applications;
                 SetupDataGridViewColumns();
 
             }
@@ -110,10 +100,10 @@ namespace AdmissionApp
 
         private void SetupDataGridViewColumns()
         {
-            // Auto-size columns first
+           
             dgvApplications.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
 
-            // Then customize specific columns
+
             if (dgvApplications.Columns.Contains("ApplicationID"))
             {
                 dgvApplications.Columns["ApplicationID"].HeaderText = "ID";
@@ -158,7 +148,7 @@ namespace AdmissionApp
             if (dgvApplications.Columns.Contains("StatusComment"))
             {
                 dgvApplications.Columns["StatusComment"].HeaderText = "Комментарий";
-                dgvApplications.Columns["StatusComment"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Use Fill for comments
+                dgvApplications.Columns["StatusComment"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; 
                 dgvApplications.Columns["StatusComment"].MinimumWidth = 150;
             }
             if (dgvApplications.Columns.Contains("SubmissionDate"))

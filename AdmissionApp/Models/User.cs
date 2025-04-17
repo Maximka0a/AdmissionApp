@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AdmissionApp.Models
+namespace AdmissionVGTU.Models
 {
     public class User
     {

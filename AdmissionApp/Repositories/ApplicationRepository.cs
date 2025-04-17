@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 using NpgsqlTypes;
-using AdmissionApp.Models;
+using AdmissionVGTU.Models;
 
-namespace AdmissionApp.Repositories
+namespace AdmissionVGTU.Repositories
 {
     public class ApplicationRepository
     {
@@ -23,12 +23,11 @@ namespace AdmissionApp.Repositories
                 new NpgsqlParameter { ParameterName = "@AverageGrade", NpgsqlDbType = NpgsqlDbType.Numeric, Value = application.AverageGrade > 0 ? (object)application.AverageGrade : DBNull.Value },
                 new NpgsqlParameter { ParameterName = "@ExamScore", NpgsqlDbType = NpgsqlDbType.Numeric, Value = application.ExamScore > 0 ? (object)application.ExamScore : DBNull.Value },
                 new NpgsqlParameter("@DocumentPath", (object)application.DocumentPath ?? DBNull.Value),
-                new NpgsqlParameter("@StatusID", 1) // Статус "ПОДАНО"
+                new NpgsqlParameter("@StatusID", 1) 
             };
 
             int applicationId = Convert.ToInt32(DatabaseHelper.ExecuteScalar(query, parameters));
 
-            // Добавление выбранных направлений подготовки
             if (applicationId > 0 && application.SelectedPrograms.Count > 0)
             {
                 foreach (var program in application.SelectedPrograms)
@@ -48,8 +47,6 @@ namespace AdmissionApp.Repositories
 
             return applicationId;
         }
-
-        // Получение заявлений пользователя
         public static List<Application> GetApplicationsByUserId(int userId)
         {
             string query = @"

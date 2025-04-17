@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8F4D9041-225E-4F8A-AE99-3151E41A7FC4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>AdmissionApp</RootNamespace>
-    <AssemblyName>AdmissionApp</AssemblyName>
+    <RootNamespace>AdmissionVGTU</RootNamespace>
+    <AssemblyName>AdmissionVGTU</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -127,41 +127,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminDashboardForm.cs">
+    <Compile Include="Forms\AdminDashboardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AdminDashboardForm.Designer.cs">
+    <Compile Include="Forms\AdminDashboardForm.Designer.cs">
       <DependentUpon>AdminDashboardForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AdmissionApp.cs">
+    <Compile Include="Forms\AdmissionApp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AdmissionApp.Designer.cs">
+    <Compile Include="Forms\AdmissionApp.Designer.cs">
       <DependentUpon>AdmissionApp.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApplicantDashboardForm.cs">
+    <Compile Include="Forms\ApplicantDashboardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ApplicantDashboardForm.Designer.cs">
+    <Compile Include="Forms\ApplicantDashboardForm.Designer.cs">
       <DependentUpon>ApplicantDashboardForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApplicationStatusForm.cs">
+    <Compile Include="Forms\ApplicationStatusForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ApplicationStatusForm.Designer.cs">
+    <Compile Include="Forms\ApplicationStatusForm.Designer.cs">
       <DependentUpon>ApplicationStatusForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApplicationSubmissionForm.cs">
+    <Compile Include="Forms\ApplicationSubmissionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ApplicationSubmissionForm.Designer.cs">
+    <Compile Include="Forms\ApplicationSubmissionForm.Designer.cs">
       <DependentUpon>ApplicationSubmissionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DatabaseHelper.cs" />
-    <Compile Include="LoginForm.cs">
+    <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LoginForm.Designer.cs">
+    <Compile Include="Forms\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Application.cs" />
@@ -171,33 +171,39 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistrationForm.cs">
+    <Compile Include="Forms\RegistrationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RegistrationForm.Designer.cs">
+    <Compile Include="Forms\RegistrationForm.Designer.cs">
       <DependentUpon>RegistrationForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReportsForm.cs">
+    <Compile Include="Forms\ReportsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReportsForm.Designer.cs">
+    <Compile Include="Forms\ReportsForm.Designer.cs">
       <DependentUpon>ReportsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Repositories\ApplicationRepository.cs" />
     <Compile Include="Repositories\ReferenceDataRepository.cs" />
     <Compile Include="Repositories\ReportRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="StudyProgramsManagementForm.cs">
+    <Compile Include="Forms\StudyProgramsManagementForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StudyProgramsManagementForm.Designer.cs">
+    <Compile Include="Forms\StudyProgramsManagementForm.Designer.cs">
       <DependentUpon>StudyProgramsManagementForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AdminDashboardForm.resx">
+    <EmbeddedResource Include="Forms\AdminDashboardForm.resx">
       <DependentUpon>AdminDashboardForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ApplicantDashboardForm.resx">
+    <EmbeddedResource Include="Forms\AdmissionApp.resx">
+      <DependentUpon>AdmissionApp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ApplicantDashboardForm.resx">
       <DependentUpon>ApplicantDashboardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -207,6 +213,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -221,6 +228,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="service\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

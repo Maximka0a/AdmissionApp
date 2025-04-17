@@ -3,18 +3,18 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Drawing;
-using AdmissionApp.Models;
-using AdmissionApp.Repositories;
-using ApplicationModel = AdmissionApp.Models.Application; // Определяем псевдоним
+using AdmissionVGTU.Models;
+using AdmissionVGTU.Repositories;
+using ApplicationModel = AdmissionVGTU.Models.Application; 
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public partial class ApplicationManagementForm : Form
     {
-        private ApplicationModel application; // Используем псевдоним
+        private ApplicationModel application; 
         private User applicant;
 
-        public ApplicationManagementForm(ApplicationModel application) // Используем псевдоним
+        public ApplicationManagementForm(ApplicationModel application)
         {
             InitializeComponent();
             this.application = application;

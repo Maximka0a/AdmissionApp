@@ -2,9 +2,9 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
-using AdmissionApp.Models;
+using AdmissionVGTU.Models;
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public partial class ApplicationStatusForm : Form
     {

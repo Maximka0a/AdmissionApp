@@ -3,7 +3,7 @@ using System.Data;
 using Npgsql;
 using System.Configuration;
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public class DatabaseHelper
     {

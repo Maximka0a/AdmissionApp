@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using AdmissionApp.Models;
-using AdmissionApp.Repositories;
-using ApplicationModel = AdmissionApp.Models.Application; // Определяем псевдоним для решения конфликта имен
+using AdmissionVGTU.Models;
+using AdmissionVGTU.Repositories;
+using ApplicationModel = AdmissionVGTU.Models.Application; // Определяем псевдоним для решения конфликта имен
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public partial class ApplicationSubmissionForm : Form
     {

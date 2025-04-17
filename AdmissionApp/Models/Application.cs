@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AdmissionApp.Models
+namespace AdmissionVGTU.Models
 {
 public class Application
 {

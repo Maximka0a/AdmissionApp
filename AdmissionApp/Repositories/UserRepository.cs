@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data;
 using Npgsql;
-using AdmissionApp.Models;
+using AdmissionVGTU.Models;
 
-namespace AdmissionApp.Repositories
+namespace AdmissionVGTU.Repositories
 {
     public class UserRepository
     {

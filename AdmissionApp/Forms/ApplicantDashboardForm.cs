@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using AdmissionApp.Models;
-using AdmissionApp.Repositories;
+using AdmissionVGTU.Models;
+using AdmissionVGTU.Repositories;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using System.Drawing.Printing;
+using System.Drawing;
 
-namespace AdmissionApp
+
+namespace AdmissionVGTU
 {
     public partial class ApplicantDashboardForm : Form
     {
         private List<Models.Application> applications;
+        private Models.Application applicationToPrint; // Для печати
+        private PrintDocument printDocument = new PrintDocument();
 
         public ApplicantDashboardForm()
         {
@@ -41,14 +46,13 @@ namespace AdmissionApp
                 applications = ApplicationRepository.GetApplicationsByUserId(CurrentUser.User.UserID);
                 dgvApplications.DataSource = null;
                 dgvApplications.DataSource = applications;
-
-                // Initial auto-size for reasonable defaults
+                
                 dgvApplications.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
 
                 if (dgvApplications.Columns.Contains("ApplicationID"))
                 {
                     dgvApplications.Columns["ApplicationID"].HeaderText = "ID";
-                    dgvApplications.Columns["ApplicationID"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // Keep ID small
+                    dgvApplications.Columns["ApplicationID"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
                 if (dgvApplications.Columns.Contains("UserID"))
                     dgvApplications.Columns["UserID"].Visible = false;
@@ -60,7 +64,7 @@ namespace AdmissionApp
                 if (dgvApplications.Columns.Contains("LevelName"))
                 {
                     dgvApplications.Columns["LevelName"].HeaderText = "Уровень образования";
-                    dgvApplications.Columns["LevelName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // Adjust width based on content
+                    dgvApplications.Columns["LevelName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
                 if (dgvApplications.Columns.Contains("AverageGrade"))
                 {
@@ -80,22 +84,21 @@ namespace AdmissionApp
                 if (dgvApplications.Columns.Contains("StatusName"))
                 {
                     dgvApplications.Columns["StatusName"].HeaderText = "Статус";
-                    dgvApplications.Columns["StatusName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // Adjust based on status text
-                    dgvApplications.Columns["StatusName"].MinimumWidth = 100; // Ensure minimum width for status
+                    dgvApplications.Columns["StatusName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
+                    dgvApplications.Columns["StatusName"].MinimumWidth = 100; 
                 }
                 if (dgvApplications.Columns.Contains("StatusComment"))
                 {
                     dgvApplications.Columns["StatusComment"].HeaderText = "Комментарий";
-                    // Set Fill mode for the comment column to take remaining space
                     dgvApplications.Columns["StatusComment"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    dgvApplications.Columns["StatusComment"].MinimumWidth = 150; // Ensure it has reasonable minimum width
+                    dgvApplications.Columns["StatusComment"].MinimumWidth = 150;
                 }
                 if (dgvApplications.Columns.Contains("SubmissionDate"))
                 {
                     dgvApplications.Columns["SubmissionDate"].HeaderText = "Дата подачи";
                     dgvApplications.Columns["SubmissionDate"].DefaultCellStyle.Format = "dd.MM.yyyy HH:mm";
-                    dgvApplications.Columns["SubmissionDate"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // Adjust based on formatted date
-                    dgvApplications.Columns["SubmissionDate"].MinimumWidth = 120; // Ensure minimum width for date/time
+                    dgvApplications.Columns["SubmissionDate"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dgvApplications.Columns["SubmissionDate"].MinimumWidth = 120;
                 }
                 if (dgvApplications.Columns.Contains("LastUpdateDate"))
                 {
@@ -140,7 +143,6 @@ namespace AdmissionApp
             ApplicationStatusForm statusForm = new ApplicationStatusForm(selectedApplication);
             statusForm.ShowDialog();
         }
-
         private void btnPrintApplication_Click(object sender, EventArgs e)
         {
             if (dgvApplications.SelectedRows.Count == 0)
@@ -158,7 +160,61 @@ namespace AdmissionApp
                 return;
             }
 
-            GenerateApplicationPdf(selectedApplication);
+            applicationToPrint = selectedApplication;
+            printDocument.PrintPage -= PrintDocument_PrintPage; 
+            printDocument.PrintPage += PrintDocument_PrintPage;
+
+            PrintDialog printDlg = new PrintDialog();
+            printDlg.Document = printDocument;
+
+            if (printDlg.ShowDialog() == DialogResult.OK)
+            {
+                printDocument.Print();
+            }
+        }
+
+        private void PrintDocument_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            if (applicationToPrint == null) return;
+
+            float x = e.MarginBounds.Left;
+            float y = e.MarginBounds.Top;
+            float lineHeight = 25f;
+            System.Drawing.Font titleFont = new System.Drawing.Font("Arial", 16, FontStyle.Bold);
+            System.Drawing.Font headerFont = new System.Drawing.Font("Arial", 12, FontStyle.Bold);
+            System.Drawing.Font bodyFont = new System.Drawing.Font("Arial", 12, FontStyle.Regular);
+
+            // Заголовок
+            e.Graphics.DrawString("ЗАЯВЛЕНИЕ", titleFont, Brushes.Black, x, y);
+            y += lineHeight * 2;
+
+            // ФИО абитуриента
+            string applicantName = CurrentUser.User?.FullName ?? "Имя не указано";
+            e.Graphics.DrawString($"Я, {applicantName}, подал(а) документы в ВУЗ.", bodyFont, Brushes.Black, x, y);
+            y += lineHeight * 2;
+
+            // Направления подготовки
+            e.Graphics.DrawString("На направления подготовки:", headerFont, Brushes.Black, x, y);
+            y += lineHeight;
+
+            if (applicationToPrint.SelectedPrograms != null && applicationToPrint.SelectedPrograms.Count > 0)
+            {
+                foreach (var program in applicationToPrint.SelectedPrograms)
+                {
+                    e.Graphics.DrawString("- " + (program.ProgramName ?? "Название не указано"), bodyFont, Brushes.Black, x + 20, y);
+                    y += lineHeight;
+                }
+            }
+            else
+            {
+                e.Graphics.DrawString("- Направления не выбраны.", bodyFont, Brushes.Black, x + 20, y);
+                y += lineHeight;
+            }
+
+            // Дата
+            y += lineHeight;
+            e.Graphics.DrawString(DateTime.Now.ToString("dd.MM.yyyy"), bodyFont, Brushes.Black, x, y);
+
         }
 
         private void GenerateApplicationPdf(Models.Application application)
@@ -276,7 +332,6 @@ namespace AdmissionApp
         {
             if (this.DialogResult != DialogResult.Abort)
             {
-                // Intentionally left blank or add logic if needed when closing via 'X'
             }
         }
     }

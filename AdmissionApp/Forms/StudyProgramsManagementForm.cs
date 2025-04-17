@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using AdmissionApp.Models;
-using AdmissionApp.Repositories;
+using AdmissionVGTU.Models;
+using AdmissionVGTU.Repositories;
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public partial class StudyProgramsManagementForm : Form
     {
@@ -53,7 +53,6 @@ namespace AdmissionApp
                 studyPrograms = ReferenceDataRepository.GetStudyProgramsByLevel(levelId);
                 dgvPrograms.DataSource = studyPrograms;
 
-                // Настройка отображения колонок
                 dgvPrograms.Columns["ProgramID"].HeaderText = "ID";
                 dgvPrograms.Columns["ProgramName"].HeaderText = "Название направления";
                 dgvPrograms.Columns["LevelID"].Visible = false;

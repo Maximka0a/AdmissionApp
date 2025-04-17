@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using AdmissionApp.Models;
-using AdmissionApp.Repositories;
+using AdmissionVGTU.Models;
+using AdmissionVGTU.Repositories;
 
-namespace AdmissionApp
+namespace AdmissionVGTU
 {
     public partial class RegistrationForm : Form
     {
